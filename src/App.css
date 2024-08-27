@@ -1,0 +1,75 @@
+/* @font-face {
+  font-family: myFirst;
+  src: url("/font/Ubuntu-Regular.ttf");
+}
+
+body {
+  font-family: myFirst;
+} */
+
+.container-parent {
+  min-height: calc(100vh - 100px);
+  padding: 2%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-box {
+  margin-top: 100px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
+  height: auto;
+  min-width: max(50vw, 40vh);
+  max-width: min(50vh, 40vw);
+}
+
+.container-top {
+  padding: 0%;
+  width: 100%;
+  margin-top: -10px;
+  border-radius: 20px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.container-bottom {
+  width: 100%;
+  margin-bottom: -5px;
+  border-radius: 20px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  text-align: center;
+  white-space: pre-wrap;
+  display: none;
+}
+
+.form-button {
+  margin-left: 50%;
+  transform: translateX(-50%);
+  min-width: 100px;
+  width: 30%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.dropdown-menu[data-bs-popper]#filters-dropdown {
+  min-width: min(30vw, 300px);
+  max-width: 30vw;
+  transform: translateX(calc(-100% + 115px));
+}
+
+.filter-btn {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.card-elem {
+  white-space: normal;
+  word-wrap: break-word;
+}
