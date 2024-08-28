@@ -4,7 +4,7 @@ import logo from "./assets/icon.png";
 
 function Navbar() {
   return (
-    <nav className="navbar bg-body-tertiary fixed-top">
+    <nav className="navbar bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
           <img src={logo} alt="logo" width={48} height={48} />
@@ -50,8 +50,8 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
-                  user management
+                <a className="nav-link" href="/cast">
+                  cast management
                 </a>
               </li>
               <li className="nav-item">
