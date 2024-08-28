@@ -3,8 +3,9 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
 import cast_plus_logo from "./assets/cast-plus.svg";
 import Filter from "./Filter";
+import { SFilter } from "./utils";
 
-function Navbar() {
+function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
   return (
     <>
       <nav className="navbar bg-body-tertiary">
@@ -26,20 +27,27 @@ function Navbar() {
               height={24}
             />
           </button>
-          <Filter filters={[
-            {
-              field: "id",
-              type: "number"
-            },
-            {
-              field: "name",
-              type: "string"
-            },
-            {
-              field: "gender",
-              type: "gender"
-            }
-          ]}/>
+          <Filter
+            onChange={onChange}
+            filters={[
+              {
+                field: "id",
+                type: "number",
+              },
+              {
+                field: "name",
+                type: "string",
+              },
+              {
+                field: "gender",
+                type: "string",
+              },
+              {
+                field: "birthday",
+                type: "datetime",
+              },
+            ]}
+          />
           <button
             className="navbar-toggler"
             type="button"

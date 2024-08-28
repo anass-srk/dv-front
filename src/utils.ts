@@ -10,7 +10,7 @@ export function base64ToImg(){
   
 }
 
-export type FitlerType = "number" | string | "datetime"
+export type FitlerType = "number" | "string" | "datetime"
 export interface Filter {
   field: string,
   type: FitlerType
@@ -18,6 +18,6 @@ export interface Filter {
 
 export type SFilter = {
   filter: Filter;
-  lv: unknown;
-  rv?: unknown;
+  lv: string;
+  rv?: string;
 }

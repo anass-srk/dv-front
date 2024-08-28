@@ -1,9 +1,9 @@
 import filter_logo from "./assets/filter.svg";
 import { Filter, SFilter } from "./utils";
 import xmark from "./assets/xmark.svg";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-function Filter_({filters} : {filters: Filter[]}) {
+function Filter_({filters,onChange} : {filters: Filter[],onChange: (sfs: SFilter[]) => void}) {
 
   const selectedFilter = useRef<Filter>(filters[0]);
   const [selectedFilters,setSelectedFilters] = useState<SFilter[]>([])
@@ -35,6 +35,10 @@ function Filter_({filters} : {filters: Filter[]}) {
       setRv("");
     }
   }
+
+  useEffect(() => {
+    onChange(selectedFilters)
+  }, [selectedFilters]);
 
   return (
     <div className="dropdown">
