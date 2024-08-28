@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
 import cast_plus_logo from "./assets/cast-plus.svg";
-import filter_logo from "./assets/filter.svg";
+import Filter from "./Filter";
 
 function Navbar() {
   return (
@@ -26,96 +26,20 @@ function Navbar() {
               height={24}
             />
           </button>
-          <div className="dropdown">
-            <button
-              style={{ flexBasis: "50px" }}
-              type="button"
-              className="btn dropdown-toggle"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              data-bs-auto-close="outside"
-            >
-              <img src={filter_logo} alt="filter_logo" width={24} height={24} />
-            </button>
-            <div
-              className="dropdown-menu p-1"
-              id="filters-dropdown"
-              style={{ minWidth: "300px" }}
-            >
-              <div className="container">
-                <div className="row">
-                  <div className="col mt-2">Add filters</div>
-                  <div className="col">
-                    <button
-                      id="clear-all"
-                      className="btn"
-                      style={{ color: "blue", float: "inline-end" }}
-                    >
-                      clear all
-                    </button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="input-group mb-3">
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary"
-                      id="filter-btn"
-                    >
-                      Add filter
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <span className="visually-hidden">Toggle Dropdown</span>
-                    </button>
-                    <ul
-                      className="dropdown-menu text-center"
-                      id="selected-filter"
-                    >
-                      <li data-type="number">
-                        <a className="dropdown-item">id</a>
-                      </li>
-                      <li data-type="text">
-                        <a className="dropdown-item">name</a>
-                      </li>
-                      <li data-type="text">
-                        <a className="dropdown-item">gender</a>
-                      </li>
-                      <div>
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value="0"
-                          id="rangeSwitch"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="rangeSwitch"
-                        >
-                          Range ?
-                        </label>
-                      </div>
-                    </ul>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="filter-value"
-                    />
-                    <input
-                      type="hidden"
-                      className="form-control"
-                      id="filter-value2"
-                    />
-                  </div>
-                </div>
-                <div id="row" className="row"></div>
-              </div>
-            </div>
-          </div>
+          <Filter filters={[
+            {
+              field: "id",
+              type: "number"
+            },
+            {
+              field: "name",
+              type: "string"
+            },
+            {
+              field: "gender",
+              type: "gender"
+            }
+          ]}/>
           <button
             className="navbar-toggler"
             type="button"
