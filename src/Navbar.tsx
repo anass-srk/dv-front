@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
+import { Links } from "./utils";
 
 function Navbar() {
   return (
@@ -40,7 +41,7 @@ function Navbar() {
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
+                <a className="nav-link active" aria-current="page" href={Links.auth.login}>
                   Login
                 </a>
               </li>
@@ -50,7 +51,7 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/cast">
+                <a className="nav-link" href={Links.cast.list}>
                   cast management
                 </a>
               </li>
@@ -75,7 +76,7 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="#">
+                <a className="nav-link" aria-current="page" href={Links.auth.logout}>
                   Logout
                 </a>
               </li>

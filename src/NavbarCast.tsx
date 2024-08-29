@@ -3,7 +3,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
 import cast_plus_logo from "./assets/cast-plus.svg";
 import Filter from "./Filter";
-import { SFilter } from "./utils";
+import { Links, SFilter } from "./utils";
 
 function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
   return (
@@ -14,10 +14,11 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
             <img src={logo} alt="logo" width={48} height={48} />
           </a>
           <p style={{ margin: "auto" }}>Discover Darija !</p>
-          <button
+          <a
             className="btn btn-success"
             type="button"
             aria-expanded="false"
+            href={Links.cast.add}
           >
             <img
               src={cast_plus_logo}
@@ -26,7 +27,7 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
               width={24}
               height={24}
             />
-          </button>
+          </a>
           <Filter
             onChange={onChange}
             filters={[
@@ -78,7 +79,7 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="/">
+                  <a className="nav-link active" aria-current="page" href={Links.auth.login}>
                     Login
                   </a>
                 </li>
@@ -88,7 +89,7 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/cast">
+                  <a className="nav-link" href={Links.cast.list}>
                     cast management
                   </a>
                 </li>
@@ -113,7 +114,7 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" aria-current="page" href="#">
+                  <a className="nav-link" aria-current="page" href={Links.auth.logout}>
                     Logout
                   </a>
                 </li>

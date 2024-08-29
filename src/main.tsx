@@ -4,13 +4,16 @@ import Login from './Login.tsx';
 import "./App.css"
 import Signup from './Signup.tsx';
 import CastList from './CastList.tsx';
+import { Links } from './utils.ts';
+import AddCast from './AddCast.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Login/>} />
-      <Route path='/signup' element={<Signup/>} />
-      <Route path='/cast' element={<CastList/>} />
+      <Route path={Links.auth.login} element={<Login/>} />
+      <Route path={Links.auth.signup} element={<Signup/>} />
+      <Route path={Links.cast.list} element={<CastList/>} />
+      <Route path={Links.cast.add} element={<AddCast/>} />
     </Routes>
   </BrowserRouter>
 );

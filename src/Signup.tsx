@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import Navbar from "./Navbar";
+import { Links } from "./utils";
 
 function Signup() {
   return (
@@ -49,8 +50,8 @@ function Signup() {
               Sign-up
             </button>
             <a>
-              or{" "}
-              <a className="link-opacity-100" href="/">
+              or
+              <a className="link-opacity-100" href={Links.auth.login}>
                 login
               </a>
             </a>
