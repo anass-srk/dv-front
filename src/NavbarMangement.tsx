@@ -1,11 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
-import cast_plus_logo from "./assets/cast-plus.svg";
-import Filter from "./Filter";
-import { Links, SFilter } from "./utils";
+import plus_logo from "./assets/plus.svg";
+import FilterElem from "./Filter";
+import { Filter, Links, SFilter } from "./utils";
 
-function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
+function Navbar({onChange,filters,subject}: {onChange: (sfs: SFilter[]) => void, filters: Filter[], subject: "cast" | "media"}) {
   return (
     <>
       <nav className="navbar bg-body-tertiary">
@@ -18,36 +18,19 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
             className="btn btn-success"
             type="button"
             aria-expanded="false"
-            href={Links.cast.add}
+            href={subject == "cast" ? Links.cast.add : Links.media.add}
           >
             <img
-              src={cast_plus_logo}
-              alt="add_cast_logo"
+              src={plus_logo}
+              alt="plus_logo"
               className="white-svg"
               width={24}
               height={24}
             />
           </a>
-          <Filter
+          <FilterElem
             onChange={onChange}
-            filters={[
-              {
-                field: "id",
-                type: "number",
-              },
-              {
-                field: "name",
-                type: "string",
-              },
-              {
-                field: "gender",
-                type: "string",
-              },
-              {
-                field: "birthday",
-                type: "datetime",
-              },
-            ]}
+            filters={filters}
           />
           <button
             className="navbar-toggler"
@@ -84,7 +67,7 @@ function Navbar({onChange}: {onChange: (sfs: SFilter[]) => void}) {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">
+                  <a className="nav-link" href={Links.media.list}>
                     media management
                   </a>
                 </li>

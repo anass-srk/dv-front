@@ -3,7 +3,7 @@ import "react-tabulator/lib/styles.css";
 import "react-tabulator/lib/css/tabulator.min.css";
 import "./static/css/tabulator_bootstrap5.min.css";
 import { ReactTabulator } from "react-tabulator";
-import { Cast, photo } from "./utils";
+import { Media, photo } from "./utils";
 import { DateTime } from "luxon";
 import { Button, Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
@@ -13,78 +13,78 @@ import yes_logo from "./assets/check.svg"
 import no_logo from "./assets/xmark.svg"
 import { Tabulator } from "react-tabulator/lib/types/TabulatorTypes";
 import { useNavigate } from "react-router-dom";
+import MultiValueFormatter from "react-tabulator/lib/formatters/MultiValueFormatter";
 
-function CastList(){
+function MediaList(){
   const [showRowModal, setShowRowModal] = useState(false);
   const [showConfModal,setShowConfModal] = useState(false);
-  const [cast,setCast] = useState<Cast[]>([])
-  const scast = useRef<Cast | null>(null)
-  const l = useRef<Cast[]>([])
+  const [media,setMedia] = useState<Media[]>([])
+  const scast = useRef<Media | null>(null)
+  const l = useRef<Media[]>([])
   const navigate = useNavigate()
   useEffect(() => {
     l.current = [
       {
         id: 0,
-        name: "Adam Dumdum",
-        gender: "male",
-        birthday: new Date("09/09/1999").getTime(),
-        photo: photo,
+        title: "Kingsman: The Golden Circle",
+        type: "video",
+        img: photo,
+        data: "asd-ad213mda",
+        release_date: new Date(2017, 8, 22).getTime(),
+        tags: ["action", "adventure", "comedy"],
+        producer: 0,
+        cast: [0, 1],
+        rating: 3.5,
       },
       {
         id: 1,
-        name: "Dam Dumdum",
-        gender: "male",
-        birthday: new Date("08/09/2000").getTime(),
-        photo: photo,
+        title: "Kingsman: The Secret Service",
+        type: "audio",
+        img: photo,
+        data: "asd-asd2-12",
+        rating: (75/100)*5,
+        release_date: new Date(2014,1,24).getTime(),
+        tags: ['crime','adventure','comedy'],
+        producer: 0,
+        cast: [0,1],
       },
     ];
-    setCast(l.current)
+    setMedia(l.current)
   },[])
   
   return (
     <>
       <Navbar
-        subject="cast"
+        subject="media"
         filters={[
-          {
-            field: "id",
-            type: "number",
-          },
-          {
-            field: "name",
-            type: "string",
-          },
-          {
-            field: "gender",
-            type: "string",
-          },
-          {
-            field: "birthday",
-            type: "datetime",
-          },
+          { field: "id", type: "number" },
+          { field: "name", type: "string" },
+          { field: "type", type: "string" },
+          { field: "rating", type: "number"},
+          { field: "tags", type: "string"}
         ]}
         onChange={(sfs) => {
-          setCast(l.current);
+          setMedia(l.current);
           for (let i = 0; i < sfs.length; ++i) {
             const rv = sfs[i].rv;
             if (rv != null) {
-              setCast(
-                cast.filter(
+              setMedia(
+                media.filter(
                   (c) =>
                     c[sfs[i].filter.field as keyof typeof c] >= sfs[i].lv &&
                     c[sfs[i].filter.field as keyof typeof c] <= rv
                 )
               );
             } else {
-              if(sfs[i].filter.type == 'string'){
-                setCast(
-                  cast.filter(
-                    (c) =>  (c[sfs[i].filter.field as keyof typeof c] as string).includes(sfs[i].lv)
+              if(sfs[i].filter.type == "string"){
+                setMedia(
+                  media.filter(
+                    (c) => (c[sfs[i].filter.field as keyof typeof c] as string).includes(sfs[i].lv)
                   )
                 );
-              }else{
-                setCast(
-                  cast.filter(
+              }else {
+                setMedia(
+                  media.filter(
                     (c) => c[sfs[i].filter.field as keyof typeof c] == sfs[i].lv
                   )
                 );
@@ -109,10 +109,18 @@ function CastList(){
           // }},
           { title: "id", field: "id" },
           { title: "name", field: "name" },
-          { title: "gender", field: "gender" },
+          { title: "type", field: "type" },
+          { title: "rating", field: "rating", hozAlign: "center",formatter: "star"},
           {
-            title: "Date Of Birth",
-            field: "birthday",
+            title: "tags",
+            field: "tags",
+            formatter: MultiValueFormatter,
+            formatterParams: { style: "PILL" },
+            sorter: (a: string[], b: string[]) => a.sort()[0].localeCompare(b.sort()[0])
+          },
+          {
+            title: "Release Date",
+            field: "release_date",
             formatter: function (cell: Tabulator.CellComponent) {
               return DateTime.fromMillis(cell.getValue()).toFormat(
                 "yyyy/MM/dd"
@@ -120,9 +128,9 @@ function CastList(){
             },
           },
         ]}
-        data={cast}
+        data={media}
         events={{
-          rowClick: (_e: PointerEvent, row: { getData: () => Cast }) => {
+          rowClick: (_e: PointerEvent, row: { getData: () => Media }) => {
             setShowRowModal(true);
             scast.current = row.getData();
           },
@@ -136,9 +144,9 @@ function CastList(){
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Cast Management</Modal.Title>
+          <Modal.Title>Media Management</Modal.Title>
         </Modal.Header>
-        <Modal.Body>What do you want to do with this cast member ?</Modal.Body>
+        <Modal.Body>What do you want to do with this media ?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowRowModal(false)}>
             Close
@@ -182,7 +190,7 @@ function CastList(){
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Cast Management</Modal.Title>
+          <Modal.Title>Media Management</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are you sure ?</Modal.Body>
         <Modal.Footer>
@@ -210,4 +218,4 @@ function CastList(){
   );
 }
 
-export default CastList;
+export default MediaList;
