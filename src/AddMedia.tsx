@@ -57,7 +57,7 @@ function AddMedia() {
       },
     ];
     setCastList(cast_list.current);
-  }, [cast_list, showImage]);
+  }, [showImage]);
 
   return (
     <>

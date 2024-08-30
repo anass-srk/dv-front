@@ -1,17 +1,17 @@
 import filter_logo from "./assets/filter.svg";
 import { Filter, SFilter } from "./utils";
 import xmark from "./assets/xmark.svg";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function Filter_({filters,onChange} : {filters: Filter[],onChange: (sfs: SFilter[]) => void}) {
-
+  const onChangeCallback = useCallback(onChange, [onChange]);
   const selectedFilter = useRef<Filter>(filters[0]);
   const [selectedFilters,setSelectedFilters] = useState<SFilter[]>([])
   const [lv,setLv] = useState('')
   const [rv,setRv] = useState('')
   const [check,setCheck] = useState(0)
 
-  function addFilter(_e: React.MouseEvent<HTMLButtonElement, MouseEvent>){
+  function addFilter(){
     if(lv.trim() != '' && selectedFilters.map(sf => sf.filter).indexOf(selectedFilter.current) == -1){
       if(rv.trim() != ''){
         setSelectedFilters([
@@ -37,8 +37,8 @@ function Filter_({filters,onChange} : {filters: Filter[],onChange: (sfs: SFilter
   }
 
   useEffect(() => {
-    onChange(selectedFilters)
-  }, [selectedFilters]);
+    onChangeCallback(selectedFilters)
+  }, [selectedFilters,onChangeCallback]);
 
   return (
     <div className="dropdown">
@@ -65,6 +65,7 @@ function Filter_({filters,onChange} : {filters: Filter[],onChange: (sfs: SFilter
                 id="clear-all"
                 className="btn"
                 style={{ color: "blue", float: "inline-end" }}
+                onClick={() => setSelectedFilters([])}
               >
                 clear all
               </button>

@@ -58,7 +58,7 @@ function MediaList(){
         subject="media"
         filters={[
           { field: "id", type: "number" },
-          { field: "name", type: "string" },
+          { field: "title", type: "string" },
           { field: "type", type: "string" },
           { field: "rating", type: "number"},
           { field: "tags", type: "string"}

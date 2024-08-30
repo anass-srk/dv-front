@@ -8,6 +8,7 @@ import { Links } from './utils.ts';
 import AddCast from './AddCast.tsx';
 import MediaList from './MediaList.tsx';
 import AddMedia from './AddMedia.tsx';
+import MediaSearch from './MediaSearch.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
       <Route path={Links.cast.add} element={<AddCast/>} />
       <Route path={Links.media.list} element={<MediaList/>} />
       <Route path={Links.media.add} element={<AddMedia/>} />
+      <Route path={Links.media.search} element={<MediaSearch/>}/>
     </Routes>
   </BrowserRouter>
 );
