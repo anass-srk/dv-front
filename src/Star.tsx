@@ -1,4 +1,4 @@
-function Star({color,bcolor,className,onClick} : {color: string, bcolor: string, className: string,onClick?: React.MouseEventHandler<SVGSVGElement>}){
+function Star({color,bcolor,className,onClick} : {color: string, bcolor: string, className?: string,onClick?: React.MouseEventHandler<SVGSVGElement>}){
 
   return (
 <svg viewBox="0 0 750 750"

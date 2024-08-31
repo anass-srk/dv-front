@@ -9,6 +9,7 @@ import Star from "./Star";
 
 function AddMedia() {
   const [title, setTitle] = useState("");
+  const [desc,setDesc] = useState("")
   const [mtype, setMtype] = useState(true);
   const [rdate, setRdate] = useState(new Date().getTime());
   const [file, setFile] = useState<File | null>(null);
@@ -105,13 +106,17 @@ function AddMedia() {
                 }}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="fromTitle">
+            <Form.Group className="mb-3" controlId="formTitle">
               <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formDesc">
+              <Form.Label>Description</Form.Label>
+              <Form.Control as="textarea" rows={3} value={desc} onChange={(e) => setDesc(e.target.value)}/>
             </Form.Group>
             <div className="row align-items-center justify-content-around">
               <Form.Group controlId="formFile" className="mb-3 col-6">
@@ -149,9 +154,17 @@ function AddMedia() {
               <Form.Group className="mb-3">
                 <Form.Label>{`rating: ${rating}`}</Form.Label>
                 <div className="row">
-                  {Array(10).fill(0,0,10).map(
-                    (_,i) => <Star className="col" key={i} color="#686D76" bcolor={rating*2 > i ? '#686D76' : 'none'} onClick={() => setRating((i+1)/2)}/>
-                    )}
+                  {Array(10)
+                    .fill(0, 0, 10)
+                    .map((_, i) => (
+                      <Star
+                        className="col"
+                        key={i}
+                        color="#686D76"
+                        bcolor={rating * 2 > i ? "#686D76" : "none"}
+                        onClick={() => setRating((i + 1) / 2)}
+                      />
+                    ))}
                 </div>
               </Form.Group>
               <Form.Group className="mb-3">

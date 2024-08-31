@@ -9,6 +9,7 @@ import AddCast from './AddCast.tsx';
 import MediaList from './MediaList.tsx';
 import AddMedia from './AddMedia.tsx';
 import MediaSearch from './MediaSearch.tsx';
+import MediaPage from './MediaPage.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -17,7 +18,10 @@ createRoot(document.getElementById("root")!).render(
       <Route path={Links.auth.signup} element={<Signup/>} />
       <Route path={Links.cast.list} element={<CastList/>} />
       <Route path={Links.cast.add} element={<AddCast/>} />
-      <Route path={Links.media.list} element={<MediaList/>} />
+      <Route path={Links.media.list}>
+        <Route path='' element={<MediaList/>} />
+        <Route path=':id' element={<MediaPage/>} />
+      </Route>
       <Route path={Links.media.add} element={<AddMedia/>} />
       <Route path={Links.media.search} element={<MediaSearch/>}/>
     </Routes>

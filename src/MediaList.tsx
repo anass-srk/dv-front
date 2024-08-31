@@ -3,7 +3,7 @@ import "react-tabulator/lib/styles.css";
 import "react-tabulator/lib/css/tabulator.min.css";
 import "./static/css/tabulator_bootstrap5.min.css";
 import { ReactTabulator } from "react-tabulator";
-import { Media, photo } from "./utils";
+import { kingsman2_logo, kingsman_logo, Media } from "./utils";
 import { DateTime } from "luxon";
 import { Button, Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
@@ -28,7 +28,7 @@ function MediaList(){
         id: 0,
         title: "Kingsman: The Golden Circle",
         type: "video",
-        img: photo,
+        img: kingsman_logo,
         data: "asd-ad213mda",
         release_date: new Date(2017, 8, 22).getTime(),
         tags: ["action", "adventure", "comedy"],
@@ -40,7 +40,7 @@ function MediaList(){
         id: 1,
         title: "Kingsman: The Secret Service",
         type: "audio",
-        img: photo,
+        img: kingsman2_logo,
         data: "asd-asd2-12",
         rating: (75/100)*5,
         release_date: new Date(2014,1,24).getTime(),
