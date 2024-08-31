@@ -22,7 +22,7 @@ function MediaSearch() {
         tags: ["action", "adventure", "comedy"],
         producer: 0,
         cast: [0, 1],
-        rating: 3.5,
+        rating: 7,
       },
       {
         id: 1,
@@ -30,7 +30,7 @@ function MediaSearch() {
         type: "audio",
         img: kingsman2_logo,
         data: "asd-asd2-12",
-        rating: (75 / 100) * 5,
+        rating: (75 / 100) * 10,
         release_date: new Date(2014, 1, 24).getTime(),
         tags: ["crime", "adventure", "comedy"],
         producer: 0,

@@ -87,8 +87,8 @@ function Navbar({onChange,filters,subject}: {onChange: (sfs: SFilter[]) => void,
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    watch
+                  <a className="nav-link" href={Links.media.search}>
+                    search
                   </a>
                 </li>
                 <li className="nav-item">

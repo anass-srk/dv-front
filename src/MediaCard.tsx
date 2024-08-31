@@ -46,7 +46,7 @@ function MediaCard({media} : {media: Media}){
         <path d={describeArc(50,50,48,0,359)} fill="rgba(238, 237, 235,0.7)"></path>
         <path d={describeArc(50,50,48,0,359)} fill="none" stroke='rgb(238, 238, 238)' strokeWidth='8'></path>
         <path d={describeArc(50,50,48,0,get_angle(media.rating))} fill="none" stroke='rgb(104, 109, 118)' strokeWidth="8"></path>
-        <text x="25" y="60" color="black" style={{fontSize: "18pt",fontWeight: "bold"}}>{`${Math.round(media.rating*20)}%`}</text>
+        <text x="25" y="60" color="black" style={{fontSize: "18pt",fontWeight: "bold"}}>{`${Math.round(media.rating*10)}%`}</text>
       </svg>
       </div>
       <h5 style={{ textAlign: "center", minWidth: "100%"}}>{media.title}</h5>

@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 import Navbar from "./Navbar";
 import { Cast, photo } from "./utils";
 import xmark from "./assets/xmark.svg";
+import Star from "./Star";
 
 function AddMedia() {
   const [title, setTitle] = useState("");
@@ -147,13 +148,11 @@ function AddMedia() {
               </div>
               <Form.Group className="mb-3">
                 <Form.Label>{`rating: ${rating}`}</Form.Label>
-                <Form.Range
-                  min={0}
-                  max={5}
-                  step={0.5}
-                  value={rating}
-                  onChange={(e) => setRating(e.target.valueAsNumber)}
-                />
+                <div className="row">
+                  {Array(10).fill(0,0,10).map(
+                    (_,i) => <Star className="col" key={i} color="#686D76" bcolor={rating > i ? '#686D76' : 'none'} onClick={() => setRating(i+1)}/>
+                    )}
+                </div>
               </Form.Group>
               <Form.Group className="mb-3">
                 <FormLabel>Producer: </FormLabel>

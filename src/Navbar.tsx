@@ -66,8 +66,8 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
-                  watch
+                <a className="nav-link" href={Links.media.search}>
+                  search
                 </a>
               </li>
               <li className="nav-item">
