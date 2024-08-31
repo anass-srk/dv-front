@@ -150,7 +150,7 @@ function AddMedia() {
                 <Form.Label>{`rating: ${rating}`}</Form.Label>
                 <div className="row">
                   {Array(10).fill(0,0,10).map(
-                    (_,i) => <Star className="col" key={i} color="#686D76" bcolor={rating > i ? '#686D76' : 'none'} onClick={() => setRating(i+1)}/>
+                    (_,i) => <Star className="col" key={i} color="#686D76" bcolor={rating*2 > i ? '#686D76' : 'none'} onClick={() => setRating((i+1)/2)}/>
                     )}
                 </div>
               </Form.Group>

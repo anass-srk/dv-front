@@ -10,7 +10,7 @@ function Star({color,bcolor,className,onClick} : {color: string, bcolor: string,
       id="layer1"
       transform="translate(0 -302.36)"
       stroke={color}
-      stroke-width="1px"
+      strokeWidth="1px"
       display="none"
       fill={bcolor}
     >
@@ -44,7 +44,7 @@ function Star({color,bcolor,className,onClick} : {color: string, bcolor: string,
         d="m92.899 614.01 564.2 0.00001l-456.41 331.58 174.31-536.46 174.31 536.46z"
         transform="translate(0 -302.36)"
         stroke={color}
-        stroke-width="1px"
+        strokeWidth="1px"
         fill={bcolor}
     />
   </g>
@@ -54,7 +54,7 @@ function Star({color,bcolor,className,onClick} : {color: string, bcolor: string,
     <path
         id="path3018"
         stroke={color}
-        stroke-width="1px"
+        strokeWidth="1px"
         fill={bcolor}
         d="m375 106.78-66.562 204.88h-215.53l174.38 126.66-66.6 204.9 174.31-126.63 174.31 126.62-66.594-204.91 174.38-126.66h-215.53l-66.57-204.86z"
     />
