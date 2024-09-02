@@ -10,6 +10,7 @@ import MediaList from './MediaList.tsx';
 import AddMedia from './AddMedia.tsx';
 import MediaSearch from './MediaSearch.tsx';
 import MediaPage from './MediaPage.tsx';
+import NotFound from './NotFound.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
       </Route>
       <Route path={Links.media.add} element={<AddMedia/>} />
       <Route path={Links.media.search} element={<MediaSearch/>}/>
+      <Route path='*' element={<NotFound/>}/>
     </Routes>
   </BrowserRouter>
 );

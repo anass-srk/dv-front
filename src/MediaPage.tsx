@@ -1,14 +1,59 @@
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { Alert, Badge } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Cast, kingsman_logo, MediaElem, photo } from "./utils";
 import { DateTime } from "luxon";
 import Star from "./Star";
 
+interface Sub{
+  time: number;
+  content: string;
+}
+
 function MediaPage() {
   const _id = useParams().id;
   const id = _id == null ? NaN : Number(_id);
+  const pcue = useRef<VTTCue | null>(null);
+  const sub = useRef<HTMLVideoElement | null>(null);
+  const subs = useRef<HTMLDivElement | null>(null);
+  const [text,setText] = useState<Sub[]>([])
+
+  function display() {
+    if (subs.current == null || sub.current == null) return;
+    const track = sub.current.textTracks[0];
+    if (track.activeCues == null || track.activeCues.length == 0) return;
+    const cue = track.activeCues[0] as VTTCue;
+    if(cue != pcue.current){
+      pcue.current = cue;
+      const h4 = document.createElement("h4");
+      h4.style.width = "100%";
+      h4.innerHTML = `<span style='margin-top: 10px' class="badge text-bg-primary">${Math.floor(cue.startTime/60).toLocaleString('en-US',{minimumIntegerDigits: 2})}:${Math.floor(cue.startTime%60).toLocaleString('en-US',{minimumIntegerDigits: 2})}</span> ${cue.text}`;
+      subs.current.appendChild(h4);
+      subs.current.scrollTo(0,subs.current.scrollHeight)
+    }
+  }
+
+  function toList<T>(l: {length: number,[j: number]: T} | null){
+    const res: T[] = []
+    if(l == null) return res
+    for(let i = 0;i < l.length;++i){
+      res.push(l[i])
+    }
+    return res
+  }
+
+  function showAll(){
+    if(sub.current == null) return;
+    console.log(123);
+    const cues = toList(sub.current.textTracks[0].cues) as VTTCue[];
+    setText(cues.map(c => {
+      return {
+        time: c.startTime,
+        content: c.text
+      }}
+    ))
+  }
 
   const _cast: Cast[] = [
     {
@@ -45,7 +90,8 @@ function MediaPage() {
 
   useEffect(() => {
     setMedia(_media);
-  }, []);
+    showAll()
+  });
 
   return (
     <>
@@ -64,7 +110,7 @@ function MediaPage() {
           no content with id {_id} is found
         </Alert>
       ) : (
-        <div style={{ color: "black" }}>
+        <div className="scroll" style={{ color: "black" }}>
           <div className="media-header">
             <div
               ref={(e) => {
@@ -72,7 +118,7 @@ function MediaPage() {
               }}
               style={{
                 width: "100%",
-                height: "480px",
+                height: "200%",
                 zIndex: "-1",
                 position: "absolute",
                 filter: "blur(50px) contrast(50%)",
@@ -93,13 +139,13 @@ function MediaPage() {
               <h1>
                 <Badge>{media.title}</Badge>
               </h1>
-              <h5>
+              <h4>
                 <Badge bg="secondary">
                   {DateTime.fromMillis(media.release_date).toFormat(
                     "dd LLL yyyy"
                   )}
                 </Badge>
-              </h5>
+              </h4>
               <div className="row">
                 {Array(10)
                   .fill(0, 0, 10)
@@ -129,7 +175,7 @@ function MediaPage() {
                 media.cast
                   .filter((c) => c != media.producer)
                   .map((c, j) => (
-                    <div key={i}>
+                    <div className="cast" key={i}>
                       <img src={c.photo} width={183} height={275} />
                       <h5>
                         {c.name}
@@ -138,6 +184,39 @@ function MediaPage() {
                     </div>
                   ))
               )}
+          </div>
+          <video
+            ref={r => sub.current = r}
+            onTimeUpdate={() => display()}
+            controls
+            // ref={(r) => {
+            //   vid.current = r
+            //   createVideoFromImage("/src/assets/audio.jpeg", 1, vid.current)
+            // }}
+            // onPlay={(e) => setTimeout(() => vid.current?.pause(),1000)}
+          >
+            <source src="/src/assets/test.mp3" type="audio/mp3" />
+            <track src="/src/assets/test.vtt" kind="subtitles" default />
+          </video>
+          <div
+            className="transcription mb-3"
+            ref={(r) => (subs.current = r)}
+            style={{ overflowY: "scroll" }}
+          >
+            {/* <div>{tr != null && toList(tr.textTracks).flatMap(t => toList(t.cues)).length}</div> */}
+            {/* {text.map((t,j) => (
+              <h4 key={j}>
+                <Badge bg="primary">{`${Math.floor(t.time / 60).toLocaleString(
+                  "en-US",
+                  { minimumIntegerDigits: 2 }
+                )}:${Math.floor(t.time / 60).toLocaleString("en-US", {
+                  minimumIntegerDigits: 2,
+                })}${Math.floor(t.time % 60).toLocaleString("en-US", {
+                  minimumIntegerDigits: 2,
+                })}`}</Badge>
+                {t.content}
+              </h4>
+            ))} */}
           </div>
         </div>
       )}

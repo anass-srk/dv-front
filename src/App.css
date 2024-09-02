@@ -99,7 +99,6 @@ body {
 
 .media-header {
   width: 100%;
-  height: 480px;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
@@ -108,6 +107,15 @@ body {
   margin-bottom: 20px;
   z-index: 0;
   color: #EEEEEE;
+}
+
+.media-header *{
+  margin-left: 1%;
+  margin-top: 1%;
+}
+
+.media-header h5{
+  text-align: center;
 }
 
 .media-header .tags{
@@ -122,6 +130,13 @@ body {
   margin: 1%;
 }
 
+.media-header-star{
+  height: 80px;
+  width: 80px;
+  max-width: 8%;
+  padding: 1%;
+}
+
 .media-cast {
   position: relative;
   margin-left: 50%;
@@ -133,25 +148,34 @@ body {
   overflow-x: scroll;
 }
 
-::-webkit-scrollbar
-{
-	width: 12px;
+.media-cast .background{
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: absolute;
+  background-image: linear-gradient(0.25turn, rgba(255,255,255,1), rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,));
 }
 
-::-webkit-scrollbar-thumb
+.scroll ::-webkit-scrollbar
+{
+	width: 8px;
+}
+
+.scroll ::-webkit-scrollbar-thumb
 {
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: #686D76;
 }
 
-.media-cast div{
+.media-cast .cast{
   margin: 1%;
   min-width: 185px;
   border: 1px solid #686D76;
   box-shadow: 2px 2px #EEEEEE;
   border-radius: 10%;
   overflow: hidden;
+  background-color: #EEEEEE;
 }
 
 .media-cast h5{
@@ -159,7 +183,27 @@ body {
   margin: 5%;
 }
 
-.media-header-star{
-  height: 100px;
-  width: 100px;
+video{
+  position: relative;
+  margin-top: 20%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.transcription {
+  position: relative;
+  margin-top: 2%;
+  padding: 1%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  width: max(50vw,300px);
+  height: max(50vh,300px);
+  background-color: white;
+  border: 1px solid black;
+  box-shadow: 2px 2px grey;
+  border-radius: 20px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
 }
