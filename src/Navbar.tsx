@@ -1,9 +1,30 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
-import { Links } from "./utils";
+import { authReq, Links, LoginResp, ServerLinks } from "./utils";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+
+  const authStr = localStorage.getItem('auth')
+  const auth: LoginResp | null = (
+    authStr == null ? 
+    null :
+    JSON.parse(authStr)
+  )
+
+  const nav = useNavigate()
+
+  function logout(e: React.MouseEvent<HTMLAnchorElement,MouseEvent>){
+    e.preventDefault()
+    authReq(ServerLinks.auth.logout,'get',{})
+    .then(async resp => {
+      if(resp.ok){
+        nav(Links.auth.login)
+      }
+    })
+  }
+
   return (
     <nav className="navbar bg-body-tertiary">
       <div className="container-fluid">
@@ -45,6 +66,7 @@ function Navbar() {
                   Login
                 </a>
               </li>
+              { (auth?.role ?? '') == "ADMIN" && <>
               <li className="nav-item">
                 <a className="nav-link" href={Links.media.list}>
                   media management
@@ -55,6 +77,8 @@ function Navbar() {
                   cast management
                 </a>
               </li>
+              </>
+              }
               <li className="nav-item">
                 <a className="nav-link" href="#">
                   trending
@@ -75,11 +99,13 @@ function Navbar() {
                   profile
                 </a>
               </li>
+              { auth != null &&
               <li className="nav-item">
-                <a className="nav-link" aria-current="page" href={Links.auth.logout}>
+                <a className="nav-link" aria-current="page" onClick={logout}>
                   Logout
                 </a>
               </li>
+              }
             </ul>
           </div>
         </div>

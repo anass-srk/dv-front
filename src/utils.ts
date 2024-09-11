@@ -56,8 +56,11 @@ export type SFilter = {
 export const Links = {
   auth:{
     login: "/",
+    forgot: "/forgot",
+    change: "/change",
     logout: "/logout",
-    signup: "/signup"
+    signup: "/signup",
+    verify: "/verify"
   },
   cast: {
     list: "/cast",
@@ -73,6 +76,30 @@ export const Links = {
     search: "/search"
   },
 }
+
+export const ServerLinks = {
+  auth: {
+    login: "/auth/login",
+    forgot: "/auth/forgot",
+    change: "/auth/change",
+    logout: "/auth/logout",
+    signup: "/auth/register",
+    verify: "/auth/verify",
+  },
+  cast: {
+    list: "/cast",
+    add: "/cast/add",
+    mod: "/cast/mod",
+    rem: "/cast/del",
+  },
+  media: {
+    list: "/media",
+    add: "/media/add",
+    mod: "/media/mod",
+    rem: "/media/rem",
+    search: "/search",
+  },
+};
 
 function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
   const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -108,6 +135,75 @@ export function describeArc(x: number, y: number, radius: number, startAngle: nu
 
 export function get_angle(rating: number): number{
   return (360/5)*rating
+}
+
+export type RestMethod = 'post' | 'get'
+
+export const server = "http://localhost:5173"
+
+export const host = "http://localhost:8080"
+
+export function noauthReq(url: string,method: RestMethod,body?: unknown){
+  if(method == 'get'){
+    return fetch(host + url, {
+      method: method
+    });
+  }
+  return fetch(host + url, {
+    method: method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+export type UserRole = "CLIENT" | "ADMIN"
+
+export type LoginResp = {
+  email: string,
+  role: UserRole,
+  token: string
+}
+
+export function authReq(url: string, method: RestMethod, body?: unknown) {
+
+  const authStr = localStorage.getItem("auth")
+
+  if(authStr == null){
+    window.location.replace(server + Links.auth.login)
+    return Promise.resolve(new Response());
+  }
+
+  const auth: LoginResp = JSON.parse(localStorage.getItem("auth")!)
+
+  if(method == 'get'){
+    return fetch(host + url, {
+      method: method,
+      headers: {
+        Authorization: "Bearer " + auth.token,
+      }
+    }).then(async (resp) => {
+      if (resp.status == 403) {
+        window.location.replace(server + Links.auth.login);
+        return Promise.resolve(new Response());
+      }
+      return resp;
+    });
+  }
+
+  return fetch(host + url, {
+    method: method,
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " +  auth.token
+    },
+    body: JSON.stringify(body),
+  }).then(async resp => {
+    if(resp.status == 403){
+      window.location.replace(server + Links.auth.login)
+      return Promise.resolve(new Response());
+    }
+    return resp
+  });
 }
 
 export const photo =

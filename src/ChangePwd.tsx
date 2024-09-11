@@ -1,37 +1,34 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import Navbar from "./Navbar";
-import { host, Links, ServerLinks } from "./utils";
+import { Links, noauthReq, ServerLinks } from "./utils";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-function Signup() {
+function ChangePwd() {
 
   const nav = useNavigate()
+  const paras = useSearchParams()
+  const id = paras[0].get('id')
 
-  const [email,setEmail] = useState("")
   const [pwd,setPwd] = useState("")
   const [err,showErr] = useState("")
 
+  if(id == null) showErr("Invalid id ! Must use email link !")
+
   function submit(e: React.FormEvent<HTMLFormElement>) {
+    if(id == null) return
     e.preventDefault()
-    if(email.trim() == "" || pwd.trim() == ""){
-      showErr("The email and password must not be empty !")
+    if(pwd.trim() == ""){
+      showErr("The password must not be empty !")
       return;
     }
-
-    fetch(host + ServerLinks.auth.signup, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: pwd
-      })
-    }).then(async resp => {
+    noauthReq(ServerLinks.auth.change + '/' + id,'post',{password: pwd}).then(async resp => {
       if(!resp.ok){
         showErr(await resp.text())
+      }else{
+        nav(Links.auth.login)
       }
-      nav(Links.auth.login)
     })
   }
 
@@ -42,37 +39,24 @@ function Signup() {
       <div className="container-parent">
         <div className="container-box">
           <div className="alert alert-secondary container-top">
-            <h1 className="mb-3 text-center">Sign-up</h1>
+            <h1 className="mb-3 text-center">Change Password</h1>
           </div>
           <form style={{ padding: "8%" }} method="post" onSubmit={submit}>
             <div className="mb-3">
               <label htmlFor="InputEmail" className="form-label">
-                Email
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="InputEmail"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.currentTarget.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="InputPassword" className="form-label">
                 Password
               </label>
               <input
                 type="password"
                 className="form-control"
-                id="InputPassword"
-                name="password"
+                id="InputEmail"
+                name="email"
                 value={pwd}
                 onChange={(e) => setPwd(e.currentTarget.value)}
               />
             </div>
             <button type="submit" className="btn btn-primary form-button">
-              Sign-up
+              confirm
             </button>
             <p>
               or{' '}
@@ -93,4 +77,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ChangePwd;

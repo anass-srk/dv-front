@@ -3,9 +3,25 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import logo from "./assets/icon.png";
 import plus_logo from "./assets/plus.svg";
 import FilterElem from "./Filter";
-import { Filter, Links, SFilter } from "./utils";
+import { authReq, Filter, Links, LoginResp, ServerLinks, SFilter } from "./utils";
+import { useNavigate } from "react-router-dom";
 
 function Navbar({onChange,filters,subject}: {onChange: (sfs: SFilter[]) => void, filters: Filter[], subject: "cast" | "media"}) {
+
+  const authStr = localStorage.getItem("auth");
+  const auth: LoginResp | null = authStr == null ? null : JSON.parse(authStr);
+
+  const nav = useNavigate();
+
+  function logout(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+    e.preventDefault();
+    authReq(ServerLinks.auth.logout, "get", {}).then(async (resp) => {
+      if (resp.ok) {
+        nav(Links.auth.login);
+      }
+    });
+  }
+
   return (
     <>
       <nav className="navbar bg-body-tertiary">
@@ -28,10 +44,7 @@ function Navbar({onChange,filters,subject}: {onChange: (sfs: SFilter[]) => void,
               height={24}
             />
           </a>
-          <FilterElem
-            onChange={onChange}
-            filters={filters}
-          />
+          <FilterElem onChange={onChange} filters={filters} />
           <button
             className="navbar-toggler"
             type="button"
@@ -62,20 +75,28 @@ function Navbar({onChange,filters,subject}: {onChange: (sfs: SFilter[]) => void,
             <div className="offcanvas-body">
               <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href={Links.auth.login}>
+                  <a
+                    className="nav-link active"
+                    aria-current="page"
+                    href={Links.auth.login}
+                  >
                     Login
                   </a>
                 </li>
-                <li className="nav-item">
-                  <a className="nav-link" href={Links.media.list}>
-                    media management
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href={Links.cast.list}>
-                    cast management
-                  </a>
-                </li>
+                {(auth?.role ?? "") == "ADMIN" && (
+                  <>
+                    <li className="nav-item">
+                      <a className="nav-link" href={Links.media.list}>
+                        media management
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a className="nav-link" href={Links.cast.list}>
+                        cast management
+                      </a>
+                    </li>
+                  </>
+                )}
                 <li className="nav-item">
                   <a className="nav-link" href="#">
                     trending
@@ -96,11 +117,17 @@ function Navbar({onChange,filters,subject}: {onChange: (sfs: SFilter[]) => void,
                     profile
                   </a>
                 </li>
-                <li className="nav-item">
-                  <a className="nav-link" aria-current="page" href={Links.auth.logout}>
-                    Logout
-                  </a>
-                </li>
+                {auth != null && (
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      aria-current="page"
+                      onClick={logout}
+                    >
+                      Logout
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
           </div>

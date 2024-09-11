@@ -1,37 +1,29 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import Navbar from "./Navbar";
-import { host, Links, ServerLinks } from "./utils";
+import { Links, noauthReq, ServerLinks } from "./utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Signup() {
+function ForgotPwd() {
 
   const nav = useNavigate()
 
   const [email,setEmail] = useState("")
-  const [pwd,setPwd] = useState("")
   const [err,showErr] = useState("")
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if(email.trim() == "" || pwd.trim() == ""){
-      showErr("The email and password must not be empty !")
+    if(email.trim() == ""){
+      showErr("The email must not be empty !")
       return;
     }
-
-    fetch(host + ServerLinks.auth.signup, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: pwd
-      })
-    }).then(async resp => {
+    noauthReq(ServerLinks.auth.forgot,'post',{email: email}).then(async resp => {
       if(!resp.ok){
         showErr(await resp.text())
+      }else{
+        nav(Links.auth.login)
       }
-      nav(Links.auth.login)
     })
   }
 
@@ -42,7 +34,7 @@ function Signup() {
       <div className="container-parent">
         <div className="container-box">
           <div className="alert alert-secondary container-top">
-            <h1 className="mb-3 text-center">Sign-up</h1>
+            <h1 className="mb-3 text-center">Forgot password</h1>
           </div>
           <form style={{ padding: "8%" }} method="post" onSubmit={submit}>
             <div className="mb-3">
@@ -58,21 +50,8 @@ function Signup() {
                 onChange={(e) => setEmail(e.currentTarget.value)}
               />
             </div>
-            <div className="mb-3">
-              <label htmlFor="InputPassword" className="form-label">
-                Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="InputPassword"
-                name="password"
-                value={pwd}
-                onChange={(e) => setPwd(e.currentTarget.value)}
-              />
-            </div>
             <button type="submit" className="btn btn-primary form-button">
-              Sign-up
+              send link
             </button>
             <p>
               or{' '}
@@ -93,4 +72,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ForgotPwd;

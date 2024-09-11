@@ -11,6 +11,9 @@ import AddMedia from './AddMedia.tsx';
 import MediaSearch from './MediaSearch.tsx';
 import MediaPage from './MediaPage.tsx';
 import NotFound from './NotFound.tsx';
+import EmailVerified from './EmailVerified.tsx';
+import ForgotPwd from './ForgotPwd.tsx';
+import ChangePwd from './ChangePwd.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -25,6 +28,9 @@ createRoot(document.getElementById("root")!).render(
       </Route>
       <Route path={Links.media.add} element={<AddMedia/>} />
       <Route path={Links.media.search} element={<MediaSearch/>}/>
+      <Route path={Links.auth.verify} element={<EmailVerified/>}/>
+      <Route path={Links.auth.forgot} element={<ForgotPwd/>}/>
+      <Route path={Links.auth.change} element={<ChangePwd/>}/>
       <Route path='*' element={<NotFound/>}/>
     </Routes>
   </BrowserRouter>

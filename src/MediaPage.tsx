@@ -1,37 +1,47 @@
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { Alert, Badge } from "react-bootstrap";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Cast, kingsman_logo, MediaElem, photo } from "./utils";
 import { DateTime } from "luxon";
 import Star from "./Star";
-
-interface Sub{
-  time: number;
-  content: string;
-}
 
 function MediaPage() {
   const _id = useParams().id;
   const id = _id == null ? NaN : Number(_id);
   const pcue = useRef<VTTCue | null>(null);
-  const sub = useRef<HTMLVideoElement | null>(null);
+  const [sub,setSub] = useState<HTMLVideoElement | null>(null);
   const subs = useRef<HTMLDivElement | null>(null);
-  const [text,setText] = useState<Sub[]>([])
+  const text = useRef<VTTCue[]>([])
 
-  function display() {
-    if (subs.current == null || sub.current == null) return;
-    const track = sub.current.textTracks[0];
-    if (track.activeCues == null || track.activeCues.length == 0) return;
-    const cue = track.activeCues[0] as VTTCue;
-    if(cue != pcue.current){
-      pcue.current = cue;
-      const h4 = document.createElement("h4");
-      h4.style.width = "100%";
-      h4.innerHTML = `<span style='margin-top: 10px' class="badge text-bg-primary">${Math.floor(cue.startTime/60).toLocaleString('en-US',{minimumIntegerDigits: 2})}:${Math.floor(cue.startTime%60).toLocaleString('en-US',{minimumIntegerDigits: 2})}</span> ${cue.text}`;
-      subs.current.appendChild(h4);
-      subs.current.scrollTo(0,subs.current.scrollHeight)
+  // function display() {
+  //   if (subs.current == null || sub.current == null) return;
+  //   const track = sub.current.textTracks[0];
+  //   if (track.activeCues == null || track.activeCues.length == 0) return;
+  //   const cue = track.activeCues[0] as VTTCue;
+  //   if(subs.current.childElementCount >= 30){
+  //     for(let i = 0;i < 20;++i){
+  //       document.getElementById(`sub${i}`)?.remove();
+  //     }
+  //   }
+  //   if(cue != pcue.current){
+  //     pcue.current = cue;
+  //     const h4 = document.createElement("h4");
+  //     h4.id = `sub${sub.current.children.length}`;
+  //     h4.style.width = "100%";
+  //     h4.innerHTML = `<span style='margin-top: 10px' class="badge text-bg-primary">${Math.floor(cue.startTime/60).toLocaleString('en-US',{minimumIntegerDigits: 2})}:${Math.floor(cue.startTime%60).toLocaleString('en-US',{minimumIntegerDigits: 2})}</span> ${cue.text}`;
+  //     subs.current.appendChild(h4);
+  //     subs.current.scrollTo(0,subs.current.scrollHeight)
+  //   }
+  // }
+
+  function getIndex<T>(l: T[],x: T): number{
+    for(let i = 0;i < l.length;++i){
+      if(x == l[i]){
+        return i;
+      }
     }
+    return -1;
   }
 
   function toList<T>(l: {length: number,[j: number]: T} | null){
@@ -43,19 +53,43 @@ function MediaPage() {
     return res
   }
 
-  function showAll(){
-    if(sub.current == null) return;
-    console.log(123);
-    const cues = toList(sub.current.textTracks[0].cues) as VTTCue[];
-    setText(cues.map(c => {
-      return {
-        time: c.startTime,
-        content: c.text
-      }}
-    ))
+  function showSubs(){
+    if(subs.current == null || sub == null || text.current.length == 0) return
+    const track = sub.textTracks[0]
+    if (track.activeCues == null || track.activeCues.length == 0) return
+    const cue = track.activeCues[0] as VTTCue
+    if(cue != pcue.current){
+      const i = getIndex(text.current,cue)
+      const j = getIndex(text.current,pcue.current)
+      for(let k = i+1;k <= j;++k){
+        document.getElementById(`sub${k}`)?.remove()
+      }
+      for(let k = j+1;k <= i;++k){
+        const h4 = document.createElement('h4')
+        h4.id = `sub${k}`
+        h4.style.width = "100%"
+        const c = text.current[k]
+        h4.innerHTML = `<span style='margin-top: 10px' class="badge text-bg-primary">${Math.floor(c.startTime/60).toLocaleString('en-US',{minimumIntegerDigits: 2})}:${Math.floor(c.startTime%60).toLocaleString('en-US',{minimumIntegerDigits: 2})}</span> ${c.text}`
+        subs.current.appendChild(h4)
+      }
+      pcue.current = cue
+      subs.current.scrollTo(0,subs.current.scrollHeight)
+      if (subs.current.childElementCount >= 30) {
+        let k = 0,m = 0
+        while(k <= 20){
+          const e = document.getElementById(`sub${k+m}`)
+          if(e != null){
+            k += 1
+            e.remove()
+          }else{
+            m += 1
+          }
+        }
+      }
+    }
   }
 
-  const _cast: Cast[] = [
+  const _cast: Cast[] = useMemo(() => {return [
     {
       id: 0,
       name: "Adam Dumdum",
@@ -70,9 +104,9 @@ function MediaPage() {
       birthday: new Date("08/09/2000").getTime(),
       photo: photo,
     },
-  ];
+  ]},[]);
 
-  const _media: MediaElem = {
+  const _media: MediaElem = useMemo(() => {return {
     id: 0,
     title: "Kingsman: The Golden Circle",
     desc: "The story of a super-secret spy organization that recruits an unrefined but promising street kid into the agency's ultra-competitive training program just as a global threat emerges from a twisted tech genius.",
@@ -84,13 +118,18 @@ function MediaPage() {
     producer: _cast[0],
     cast: _cast,
     rating: 3.5,
-  };
+  }},[_cast]);
 
   const [media, setMedia] = useState<MediaElem | null>(null);
 
   useEffect(() => {
     setMedia(_media);
-    showAll()
+    text.current = []
+    setInterval(() => {
+    if (sub != null && text.current.length == 0) {
+      text.current = toList(sub.textTracks[0].cues) as VTTCue[];
+    }
+    },1000)
   });
 
   return (
@@ -186,8 +225,8 @@ function MediaPage() {
               )}
           </div>
           <video
-            ref={r => sub.current = r}
-            onTimeUpdate={() => display()}
+            ref={r => setSub(r)}
+            onTimeUpdate={() => showSubs()}
             controls
             // ref={(r) => {
             //   vid.current = r
