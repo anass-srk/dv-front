@@ -14,6 +14,7 @@ import NotFound from './NotFound.tsx';
 import EmailVerified from './EmailVerified.tsx';
 import ForgotPwd from './ForgotPwd.tsx';
 import ChangePwd from './ChangePwd.tsx';
+import ModCast from './ModCast.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
       <Route path={Links.auth.signup} element={<Signup/>} />
       <Route path={Links.cast.list} element={<CastList/>} />
       <Route path={Links.cast.add} element={<AddCast/>} />
+      <Route path={Links.cast.mod} element={<ModCast/>} />
       <Route path={Links.media.list}>
         <Route path='' element={<MediaList/>} />
         <Route path=':id' element={<MediaPage/>} />

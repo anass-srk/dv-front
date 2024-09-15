@@ -1,4 +1,4 @@
-export type Gender = "male" | "female";
+export type Gender = "MALE" | "FEMALE";
 export interface Cast {
   id: number,
   name: string,
@@ -7,7 +7,13 @@ export interface Cast {
   photo: string
 }
 
-export type MediaType = "video" | "audio"
+export interface CastReq {
+  name: string;
+  gender: Gender;
+  birthday: number;
+}
+
+export type MediaType = "VIDEO" | "AUDIO"
 
 export interface Media {
   id:number,
@@ -89,8 +95,9 @@ export const ServerLinks = {
   cast: {
     list: "/cast",
     add: "/cast/add",
+    get: "/cast",
     mod: "/cast/mod",
-    rem: "/cast/del",
+    rem: "/cast/rem",
   },
   media: {
     list: "/media",
@@ -141,7 +148,7 @@ export type RestMethod = 'post' | 'get'
 
 export const server = "http://localhost:5173"
 
-export const host = "http://localhost:8080"
+export const host = "http://localhost:8050"
 
 export function noauthReq(url: string,method: RestMethod,body?: unknown){
   if(method == 'get'){
@@ -151,8 +158,8 @@ export function noauthReq(url: string,method: RestMethod,body?: unknown){
   }
   return fetch(host + url, {
     method: method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: (body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+    body: (body instanceof FormData ? body : JSON.stringify(body)),
   });
 }
 

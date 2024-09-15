@@ -3,10 +3,18 @@ import cast_logo from "./assets/cast.svg"
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import Navbar from "./Navbar";
-import {Gender, noauthReq, ServerLinks } from "./utils";
+import {Cast, Gender, Links, noauthReq, server, ServerLinks } from "./utils";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
-function AddCast(){
+function ModCast(){
+
+  const params = useSearchParams()
+  const _id = params[0].get('id')
+  const nav = useNavigate()
+
+  if(_id == null) nav(Links.cast.list)
+  const id = Number(_id)
 
   const [name,setName] = useState('')
   const [gender,setGender] = useState<Gender>("MALE")
@@ -18,6 +26,28 @@ function AddCast(){
   useEffect(() => {
     showImage()
   },[file])
+
+  useEffect(() => {
+    noauthReq(ServerLinks.cast.get + "/" + id, "get", {}).then(
+      async (resp) => {
+        if (resp.ok) {
+          const c = (await resp.json()) as Cast;
+          setName(c.name);
+          setGender(c.gender);
+          setDob(c.birthday);
+          noauthReq("/cast/img/" + c.photo, "get", {}).then(
+            async (resp) => {
+              if (resp.ok) {
+                setFile((await resp.blob()) as File);
+              }
+            }
+          );
+        }else{
+          setErr("Unable to load cast member !");
+        }
+      }
+    );
+  },[id])
 
   function showImage() {
     const reader = new FileReader();
@@ -46,16 +76,17 @@ function AddCast(){
     
     setErr('')
     const formData = new FormData()
+    formData.set("id",id.toString())
     formData.set("name",name)
     formData.set("gender",gender)
     formData.set("birthday",dob.toString())
     formData.set('photo',file!)
     
-    noauthReq(ServerLinks.cast.add,'post',formData)
+    noauthReq("/cast/mod",'post',formData)
     .then(async resp => {
       if(resp.ok){
         console.log(await resp.json())
-        window.location.reload()
+        window.location.replace(server + "/cast")
       }else{
         setErr((await resp.text()))
       }
@@ -68,7 +99,7 @@ function AddCast(){
       <div className="container-parent">
         <div className="container-box">
           <div className="alert alert-secondary container-top">
-            <h1 className="mb-3 text-center">Add Cast Member</h1>
+            <h1 className="mb-3 text-center">Modify Cast Member</h1>
           </div>
           <Form style={{ padding: "8%" }} className="container" onSubmit={submit}>
             <div className="row justify-content-center">
@@ -139,7 +170,7 @@ function AddCast(){
               </div>
             </div>
             <button className="btn btn-success form-button" type="submit">
-              Add Cast Member
+              Modify Cast Member
             </button>
           </Form>
 { err.trim() != '' && 
@@ -156,4 +187,4 @@ function AddCast(){
   );
 }
 
-export default AddCast;
+export default ModCast;

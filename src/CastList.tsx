@@ -3,7 +3,7 @@ import "react-tabulator/lib/styles.css";
 import "react-tabulator/lib/css/tabulator.min.css";
 import "./static/css/tabulator_bootstrap5.min.css";
 import { ReactTabulator } from "react-tabulator";
-import { Cast, photo } from "./utils";
+import { Cast, noauthReq, ServerLinks } from "./utils";
 import { DateTime } from "luxon";
 import { Button, Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
@@ -12,7 +12,6 @@ import delete_logo from "./assets/trash.svg"
 import yes_logo from "./assets/check.svg"
 import no_logo from "./assets/xmark.svg"
 import { Tabulator } from "react-tabulator/lib/types/TabulatorTypes";
-import { useNavigate } from "react-router-dom";
 
 function CastList(){
   const [showRowModal, setShowRowModal] = useState(false);
@@ -20,25 +19,32 @@ function CastList(){
   const [cast,setCast] = useState<Cast[]>([])
   const scast = useRef<Cast | null>(null)
   const l = useRef<Cast[]>([])
-  const navigate = useNavigate()
   useEffect(() => {
-    l.current = [
-      {
-        id: 0,
-        name: "Adam Dumdum",
-        gender: "male",
-        birthday: new Date("09/09/1999").getTime(),
-        photo: photo,
-      },
-      {
-        id: 1,
-        name: "Dam Dumdum",
-        gender: "male",
-        birthday: new Date("08/09/2000").getTime(),
-        photo: photo,
-      },
-    ];
+    // l.current = [
+    //   {
+    //     id: 0,
+    //     name: "Adam Dumdum",
+    //     gender: "MALE",
+    //     birthday: new Date("09/09/1999").getTime(),
+    //     photo: photo,
+    //   },
+    //   {
+    //     id: 1,
+    //     name: "Dam Dumdum",
+    //     gender: "MALE",
+    //     birthday: new Date("08/09/2000").getTime(),
+    //     photo: photo,
+    //   },
+    // ];
+    l.current = []
     setCast(l.current)
+    noauthReq("/cast/","get",{})
+    .then(async resp => {
+      if(resp.ok){
+        l.current = (await resp.json()) as Cast[]
+        setCast(l.current)
+      }
+    })
   },[])
   
   return (
@@ -146,7 +152,9 @@ function CastList(){
           <Button
             variant="success"
             onClick={() => {
-              navigate("/cast/modify?id=" + scast.current?.id);
+              console.log(scast.current?.id)
+              window.location.replace("/cast/mod?id=" + scast.current?.id);
+              // navigate("/cast/mod?id=" + scast.current?.id);
             }}
           >
             <img
@@ -186,7 +194,17 @@ function CastList(){
         </Modal.Header>
         <Modal.Body>Are you sure ?</Modal.Body>
         <Modal.Footer>
-          <Button variant="success">
+          <Button variant="success" onClick={() => noauthReq(ServerLinks.cast.rem + '/' + scast.current?.id,'get',{}).then(async resp => {
+            if(resp.ok){
+              const c = (await resp.json()) as Cast
+              l.current = l.current.filter(_ => _.id != c.id)
+              setCast(cast.filter(_ => _.id != c.id))
+              console.log(cast)
+            }else{
+              console.error(await resp.text())
+            }
+            setShowConfModal(false)
+          })}>
             <img
               src={yes_logo}
               alt="yes_logo"
