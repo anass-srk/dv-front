@@ -3,7 +3,7 @@ import cast_logo from "./assets/cast.svg"
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import Navbar from "./Navbar";
-import {Gender, noauthReq, ServerLinks } from "./utils";
+import {authReq, Gender, ServerLinks } from "./utils";
 
 
 function AddCast(){
@@ -51,7 +51,7 @@ function AddCast(){
     formData.set("birthday",dob.toString())
     formData.set('photo',file!)
     
-    noauthReq(ServerLinks.cast.add,'post',formData)
+    authReq(ServerLinks.cast.add,'post',formData)
     .then(async resp => {
       if(resp.ok){
         console.log(await resp.json())

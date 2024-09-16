@@ -93,9 +93,10 @@ export const ServerLinks = {
     verify: "/auth/verify",
   },
   cast: {
-    list: "/cast",
+    list: "/cast/list",
     add: "/cast/add",
     get: "/cast",
+    get_photo: "/cast/img",
     mod: "/cast/mod",
     rem: "/cast/rem",
   },
@@ -197,13 +198,19 @@ export function authReq(url: string, method: RestMethod, body?: unknown) {
     });
   }
 
+  const headers: {
+    Authorization: string,
+    "Content-Type"?: string
+  } = {
+    "Authorization": "Bearer " + auth.token,
+  }
+
+  if(!(body instanceof FormData)) headers["Content-Type"] = "application/json";
+
   return fetch(host + url, {
     method: method,
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " +  auth.token
-    },
-    body: JSON.stringify(body),
+    headers: headers,
+    body: (body instanceof FormData ? body : JSON.stringify(body)),
   }).then(async resp => {
     if(resp.status == 403){
       window.location.replace(server + Links.auth.login)

@@ -3,7 +3,7 @@ import cast_logo from "./assets/cast.svg"
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import Navbar from "./Navbar";
-import {Cast, Gender, Links, noauthReq, server, ServerLinks } from "./utils";
+import {authReq, Cast, Gender, Links, server, ServerLinks } from "./utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 
@@ -28,14 +28,14 @@ function ModCast(){
   },[file])
 
   useEffect(() => {
-    noauthReq(ServerLinks.cast.get + "/" + id, "get", {}).then(
+    authReq(ServerLinks.cast.get + "/" + id, "get", {}).then(
       async (resp) => {
         if (resp.ok) {
           const c = (await resp.json()) as Cast;
           setName(c.name);
           setGender(c.gender);
           setDob(c.birthday);
-          noauthReq("/cast/img/" + c.photo, "get", {}).then(
+          authReq(ServerLinks.cast.get_photo + "/" + c.photo, "get", {}).then(
             async (resp) => {
               if (resp.ok) {
                 setFile((await resp.blob()) as File);
@@ -82,11 +82,11 @@ function ModCast(){
     formData.set("birthday",dob.toString())
     formData.set('photo',file!)
     
-    noauthReq("/cast/mod",'post',formData)
+    authReq(ServerLinks.cast.mod,'post',formData)
     .then(async resp => {
       if(resp.ok){
         console.log(await resp.json())
-        window.location.replace(server + "/cast")
+        window.location.replace(server + Links.cast.list)
       }else{
         setErr((await resp.text()))
       }

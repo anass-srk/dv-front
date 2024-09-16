@@ -3,7 +3,7 @@ import "react-tabulator/lib/styles.css";
 import "react-tabulator/lib/css/tabulator.min.css";
 import "./static/css/tabulator_bootstrap5.min.css";
 import { ReactTabulator } from "react-tabulator";
-import { Cast, noauthReq, ServerLinks } from "./utils";
+import { authReq, Cast, Links, ServerLinks } from "./utils";
 import { DateTime } from "luxon";
 import { Button, Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
@@ -38,7 +38,7 @@ function CastList(){
     // ];
     l.current = []
     setCast(l.current)
-    noauthReq("/cast/","get",{})
+    authReq(ServerLinks.cast.list,"get",{})
     .then(async resp => {
       if(resp.ok){
         l.current = (await resp.json()) as Cast[]
@@ -153,7 +153,7 @@ function CastList(){
             variant="success"
             onClick={() => {
               console.log(scast.current?.id)
-              window.location.replace("/cast/mod?id=" + scast.current?.id);
+              window.location.replace(Links.cast.mod + "?id=" + scast.current?.id);
               // navigate("/cast/mod?id=" + scast.current?.id);
             }}
           >
@@ -194,7 +194,7 @@ function CastList(){
         </Modal.Header>
         <Modal.Body>Are you sure ?</Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={() => noauthReq(ServerLinks.cast.rem + '/' + scast.current?.id,'get',{}).then(async resp => {
+          <Button variant="success" onClick={() => authReq(ServerLinks.cast.rem + '/' + scast.current?.id,'get',{}).then(async resp => {
             if(resp.ok){
               const c = (await resp.json()) as Cast
               l.current = l.current.filter(_ => _.id != c.id)
