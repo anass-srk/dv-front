@@ -101,8 +101,10 @@ export const ServerLinks = {
     rem: "/cast/rem",
   },
   media: {
-    list: "/media",
+    list: "/media/list",
     add: "/media/add",
+    get: "/media",
+    get_files: "/media/files",
     mod: "/media/mod",
     rem: "/media/rem",
     search: "/search",

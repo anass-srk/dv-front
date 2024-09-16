@@ -15,6 +15,7 @@ import EmailVerified from './EmailVerified.tsx';
 import ForgotPwd from './ForgotPwd.tsx';
 import ChangePwd from './ChangePwd.tsx';
 import ModCast from './ModCast.tsx';
+import ModMedia from './ModMedia.tsx';
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path=':id' element={<MediaPage/>} />
       </Route>
       <Route path={Links.media.add} element={<AddMedia/>} />
+      <Route path={Links.media.mod} element={<ModMedia/>} />
       <Route path={Links.media.search} element={<MediaSearch/>}/>
       <Route path={Links.auth.verify} element={<EmailVerified/>}/>
       <Route path={Links.auth.forgot} element={<ForgotPwd/>}/>

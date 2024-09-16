@@ -3,11 +3,20 @@ import media_logo from "./assets/icon.png";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import Navbar from "./Navbar";
-import { authReq, Cast, Links, MediaType, ServerLinks } from "./utils";
+import { authReq, Cast, Links, MediaElem, MediaType, ServerLinks } from "./utils";
 import xmark from "./assets/xmark.svg";
 import Star from "./Star";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-function AddMedia() {
+function ModMedia() {
+
+const params = useSearchParams();
+const _id = params[0].get("id");
+const nav = useNavigate();
+
+if (_id == null) nav(Links.media.list);
+const id = Number(_id);
+
   const [title, setTitle] = useState("");
   const [desc,setDesc] = useState("")
   const [mtype, setMtype] = useState<MediaType>("VIDEO");
@@ -17,7 +26,7 @@ function AddMedia() {
   const [rating, setRating] = useState(1);
   const img = useRef<HTMLImageElement | null>(null);
   const [castList, setCastList] = useState<Cast[]>([]);
-  const producer = useRef(-1);
+  const [producer,setProducer] = useState(-1);
   const [tags, setTags] = useState<string[]>([]);
   const [tag, setTag] = useState("");
   const [scast,setScast] = useState<Cast | null>(null)
@@ -55,11 +64,37 @@ function AddMedia() {
         setErr(await resp.text())
       }
     })
+    authReq(ServerLinks.media.get + '/' + id,"get",{}).then(async resp => {
+      if(resp.ok){
+        const m: MediaElem = (await resp.json()) as MediaElem
+        setTitle(m.title)
+        setDesc(m.desc)
+        setMtype(m.type)
+        setRdate(m.release_date)
+        setRating(m.rating)
+        setProducer(m.producer.id)
+        setTags(m.tags)
+        setScastList(m.cast)
+        authReq(ServerLinks.media.get_files + "/" + m.img,"get",{}).then(async r => {
+          if(r.ok){
+            setFile((await r.blob()) as File)
+          }
+        })
+        authReq(ServerLinks.media.get_files + "/" + m.data,"get",{}).then(async r => {
+          if(r.ok){
+            setData((await r.blob()) as File)
+          }
+        })
+      }else{
+        setErr(await resp.text())
+      }
+    })
   },[])
 
   function submit(e: React.FormEvent<HTMLFormElement>){
     e.preventDefault()
     const formData = new FormData()
+    formData.set("id",id.toString())
     formData.set("title",title)
     formData.set("desc",desc)
     formData.set("type",mtype)
@@ -70,12 +105,13 @@ function AddMedia() {
     tags.forEach(t => {
       formData.append("tags",t)
     })
-    formData.set("producer",producer.current.toString())
+    formData.set("producer",producer.toString())
     scastList.forEach(c => {
       formData.append("cast",c.id.toString())
     })
-    authReq(ServerLinks.media.add,"post",formData).then(async resp => {
+    authReq(ServerLinks.media.mod,"post",formData).then(async resp => {
       if(resp.ok){
+
         window.location.replace(Links.media.list)
       }else{
         setErr(await resp.text())
@@ -89,7 +125,7 @@ function AddMedia() {
       <div className="container-parent">
         <div className="container-box">
           <div className="alert alert-secondary container-top">
-            <h1 className="mb-3 text-center">Add Media</h1>
+            <h1 className="mb-3 text-center">Modify Media</h1>
           </div>
           <Form style={{ padding: "8%" }} className="container" onSubmit={submit}>
             <div className="row justify-content-center">
@@ -191,9 +227,10 @@ function AddMedia() {
               <Form.Group className="mb-3">
                 <FormLabel>Producer: </FormLabel>
                 <Form.Select
-                  onClick={(e) =>
-                    (producer.current = Number(e.currentTarget.value))
+                  onChange={(e) =>
+                    (setProducer(Number(e.currentTarget.value)))
                   }
+                  value={producer}
                 >
                   <option key={-1} value={-1}>
                     Select the producer
@@ -383,7 +420,7 @@ function AddMedia() {
                 ))}
               </div>
             </div>
-            <button className="btn btn-success form-button">Add Media</button>
+            <button className="btn btn-success form-button">Modify Media</button>
           </Form>
 { err.trim() != "" &&
           <div
@@ -399,4 +436,4 @@ function AddMedia() {
   );
 }
 
-export default AddMedia;
+export default ModMedia;
