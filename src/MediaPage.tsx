@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { Alert, Badge } from "react-bootstrap";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Cast, kingsman_logo, MediaElem, photo } from "./utils";
+import { useEffect, useRef, useState } from "react";
+import { authReq, MediaElem, ServerLinks } from "./utils";
 import { DateTime } from "luxon";
 import Star from "./Star";
 
@@ -89,41 +89,11 @@ function MediaPage() {
     }
   }
 
-  const _cast: Cast[] = useMemo(() => {return [
-    {
-      id: 0,
-      name: "Adam Dumdum",
-      gender: "MALE",
-      birthday: new Date("09/09/1999").getTime(),
-      photo: photo,
-    },
-    {
-      id: 1,
-      name: "Dam Dumdum",
-      gender: "MALE",
-      birthday: new Date("08/09/2000").getTime(),
-      photo: photo,
-    },
-  ]},[]);
-
-  const _media: MediaElem = useMemo(() => {return {
-    id: 0,
-    title: "Kingsman: The Golden Circle",
-    desc: "The story of a super-secret spy organization that recruits an unrefined but promising street kid into the agency's ultra-competitive training program just as a global threat emerges from a twisted tech genius.",
-    type: "VIDEO",
-    img: kingsman_logo,
-    data: "asd-ad213mda",
-    release_date: new Date(2017, 8, 22).getTime(),
-    tags: ["action", "adventure", "comedy"],
-    producer: _cast[0],
-    cast: _cast,
-    rating: 3.5,
-  }},[_cast]);
-
   const [media, setMedia] = useState<MediaElem | null>(null);
+  const [file,setFile] = useState<File | null>(null)
+  const [data,setData] = useState<File | null>(null)
 
   useEffect(() => {
-    setMedia(_media);
     text.current = []
     setInterval(() => {
     if (sub != null && text.current.length == 0) {
@@ -132,10 +102,52 @@ function MediaPage() {
     },1000)
   });
 
+
+
+  useEffect(() => {
+    authReq(ServerLinks.media.get + "/" + id, "get", {}).then(async (resp) => {
+      if (resp.ok) {
+        const m = (await resp.json()) as MediaElem
+        setMedia(m)
+        authReq(ServerLinks.media.get_files + "/" + m.img, "get", {}).then(
+          async (r) => {
+            if (r.ok) {
+              setFile((await r.blob()) as File);
+            }
+          }
+        );
+        authReq(ServerLinks.media.get_files + "/" + m.data, "get", {}).then(
+          async (r) => {
+            if (r.ok) {
+              const d = (await r.blob()) as File
+              setData(d)
+            }
+          }
+        );
+      } else {
+        setMedia(null)
+      }
+    });
+  },[])
+
+  useEffect(() => {
+    media?.cast.forEach(c => {
+      authReq(ServerLinks.cast.get_photo + "/" + c.photo, "get", {}).then(
+        async (resp) => {
+          if (resp.ok) {
+            c.photo = URL.createObjectURL((await resp.blob()) as File);
+          } else {
+            console.log("ERR : ", c.photo);
+          }
+        }
+      );
+    })
+  },[media])
+
   return (
     <>
       <Navbar />
-      {isNaN(id) || media == null ? (
+      {isNaN(id) || media == null || file == null || data == null ? (
         <Alert
           variant="light"
           style={{
@@ -153,7 +165,7 @@ function MediaPage() {
           <div className="media-header">
             <div
               ref={(e) => {
-                if (e != null) e.style.backgroundImage = `url(${media.img})`;
+                if (e != null) e.style.backgroundImage = `url(${URL.createObjectURL(file!)})`;
               }}
               style={{
                 width: "100%",
@@ -167,7 +179,7 @@ function MediaPage() {
                 backgroundSize: "cover",
               }}
             />
-            <img src={media.img} width={320} height={475} />
+            <img src={URL.createObjectURL(file!)} width={320} height={475} />
             <div
               style={{
                 display: "flex",
@@ -208,7 +220,7 @@ function MediaPage() {
             </div>
           </div>
           <div className="media-cast">
-            {Array(120)
+            {/* {Array(120)
               .fill(0, 0, 20)
               .map((_, i) =>
                 media.cast
@@ -222,10 +234,18 @@ function MediaPage() {
                       </h5>
                     </div>
                   ))
-              )}
+              )} */}
+            {media.cast.map((c, i) => (
+              <div className="cast" key={i}>
+                <img src={c.photo} width={183} height={275} />
+                <h5>
+                  {c.name}
+                </h5>
+              </div>
+            ))}
           </div>
           <video
-            ref={r => setSub(r)}
+            ref={(r) => setSub(r)}
             onTimeUpdate={() => showSubs()}
             controls
             // ref={(r) => {
@@ -234,7 +254,7 @@ function MediaPage() {
             // }}
             // onPlay={(e) => setTimeout(() => vid.current?.pause(),1000)}
           >
-            <source src="/src/assets/test.mp3" type="audio/mp3" />
+            {data != null && <source src={URL.createObjectURL(data)} />}
             <track src="/src/assets/test.vtt" kind="subtitles" default />
           </video>
           <div

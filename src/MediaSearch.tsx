@@ -2,7 +2,7 @@ import Navbar from "./NavbarMangement";
 import "react-tabulator/lib/styles.css";
 import "react-tabulator/lib/css/tabulator.min.css";
 import "./static/css/tabulator_bootstrap5.min.css";
-import {  kingsman2_logo, kingsman_logo, Media } from "./utils";
+import {  authReq, Media, ServerLinks } from "./utils";
 import { useEffect, useRef, useState } from "react";
 import { Alert } from "react-bootstrap";
 import MediaCard from "./MediaCard";
@@ -11,33 +11,14 @@ function MediaSearch() {
   const [media, setMedia] = useState<Media[]>([]);
   const l = useRef<Media[]>([]);
   useEffect(() => {
-    l.current = [
-      {
-        id: 0,
-        title: "Kingsman: The Golden Circle",
-        type: "video",
-        img: kingsman_logo,
-        data: "asd-ad213mda",
-        release_date: new Date(2017, 8, 22).getTime(),
-        tags: ["action", "adventure", "comedy"],
-        producer: 0,
-        cast: [0, 1],
-        rating: 3.5,
-      },
-      {
-        id: 1,
-        title: "Kingsman: The Secret Service",
-        type: "audio",
-        img: kingsman2_logo,
-        data: "asd-asd2-12",
-        rating: (75 / 100) * 5,
-        release_date: new Date(2014, 1, 24).getTime(),
-        tags: ["crime", "adventure", "comedy"],
-        producer: 0,
-        cast: [0, 1],
-      },
-    ];
+    l.current = [];
     setMedia(l.current);
+    authReq(ServerLinks.media.list, "get", {}).then(async (resp) => {
+      if (resp.ok) {
+        l.current = (await resp.json()) as Media[];
+        setMedia(l.current);
+      }
+    });
   }, []);
 
   return (
@@ -103,7 +84,7 @@ function MediaSearch() {
         justifyContent: "start",
         alignContent: "start"
       }}>
-        {Array(10)
+        {/* {Array(10)
           .fill(0, 0, 10)
           .map(() =>
             media.map((m, i) => (
@@ -131,7 +112,10 @@ function MediaSearch() {
               // </Card>
               <MediaCard media={m} key={i}/>
             ))
-          )}
+          )} */}
+        {media.map((m,i) => (
+          <MediaCard media={m} key={i}/>
+        ))}
       </div>
     </>
   );
